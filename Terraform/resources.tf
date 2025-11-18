@@ -205,6 +205,16 @@ resource "aws_autoscaling_group" "asg" {
     wait_for_capacity_timeout = "0"
 }
 
+resource "aws_lb" "alb" {
+    name               = "vfc-alb"
+    security_groups    = [aws_security_group.alb_sg.id]
+    subnets            = [aws_subnet.public_subnet_1.id, aws_subnet.public_subnet_2.id]
+
+    tags = {
+        Name = "vfc-alb"
+    }
+}
+
 resource "aws_db_subnet_group" "rds_subnets" {
     name = "rds-subnet-group"
     subnet_ids = [aws_subnet.private_subnet_1.id]
@@ -217,7 +227,7 @@ resource "aws_db_subnet_group" "rds_subnets" {
 resource "aws_db_instance" "postgresql" {
     allocated_storage    = 20
     engine               = "postgres"
-    engine_version       = "15.3"
+    engine_version       = "16.11"
     instance_class       = "db.t3.micro"
     username             = "admin"
     password             = "Admin123!"  # use secrets in production
