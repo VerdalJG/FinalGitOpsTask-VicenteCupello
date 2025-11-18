@@ -200,11 +200,14 @@ resource "aws_autoscaling_group" "asg" {
         version = "$Latest"
     }
 
+    target_group_arns = [aws_lb_target_group.asg_targets.arn]
+
     health_check_type         = "EC2"
     force_delete              = true
     wait_for_capacity_timeout = "0"
 }
 
+# Load balancer resources
 resource "aws_lb" "alb" {
     name               = "vfc-alb"
     security_groups    = [aws_security_group.alb_sg.id]
@@ -212,6 +215,32 @@ resource "aws_lb" "alb" {
 
     tags = {
         Name = "vfc-alb"
+    }
+}
+
+resource "aws_lb_target_group" "asg_targets" {
+    name     = "vfc-asg-tg"
+    port     = 80
+    protocol = "HTTP"
+    vpc_id   = aws_vpc.main_vpc.id
+
+    health_check {
+        path                = "/"
+        interval            = 20
+        healthy_threshold   = 3
+        unhealthy_threshold = 3
+        matcher             = "200"
+    }
+}
+
+resource "aws_lb_listener" "http" {
+    load_balancer_arn = aws_lb.alb.arn
+    port              = "80"
+    protocol          = "HTTP"
+
+    default_action {
+        type             = "forward"
+        target_group_arn = aws_lb_target_group.asg_targets.arn
     }
 }
 
