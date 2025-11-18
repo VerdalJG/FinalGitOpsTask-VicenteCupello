@@ -10,7 +10,7 @@ data "aws_ami" "ubuntu_ami" {
 }
 
 data "aws_key_pair" "existing_vfc_key" {
-    key_name = "vfc-key"
+    key_name = "vfc-git"
 }
 
 data "aws_instances" "asg_instances" {

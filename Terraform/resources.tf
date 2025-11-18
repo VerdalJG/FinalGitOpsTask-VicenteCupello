@@ -178,9 +178,9 @@ resource "aws_security_group" "rds_sg" {
 # Launch template
 resource "aws_launch_template" "asg_lt" {
     name_prefix = "asg-template-"
-    image_id = data.aws_ami.ubuntu_ami
+    image_id = data.aws_ami.ubuntu_ami.id
     instance_type = "t3.micro"
-    key_name = "vfc-git"
+    key_name = data.aws_key_pair.existing_vfc_key
 
     network_interfaces {
         associate_public_ip_address = true
