@@ -180,7 +180,7 @@ resource "aws_launch_template" "asg_lt" {
     name_prefix = "asg-template-"
     image_id = data.aws_ami.ubuntu_ami.id
     instance_type = "t3.micro"
-    key_name = data.aws_key_pair.existing_vfc_key
+    key_name = data.aws_key_pair.existing_vfc_key.key_name
 
     network_interfaces {
         associate_public_ip_address = true
