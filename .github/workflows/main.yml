@@ -28,15 +28,19 @@ jobs:
           terraform init
 
       - name: Terraform Plan
+        env:
+          AWS_REGION: us-west-1
         run: |
           cd Terraform
           terraform validate
-          terraform plan -out=tfplan
+          terraform plan -var="aws_region=${{ secrets.AWS_REGION }}" -out=tfplan
 
       - name: Terraform Apply
+        env:
+          AWS_REGION: us-west-1
         run: |
           cd Terraform
-          terraform apply -auto-approve tfplan
+          terraform apply -var="aws_region=${{ secrets.AWS_REGION }}" -auto-approve tfplan
 
       - name: Terraform Output
         id: tf_output
