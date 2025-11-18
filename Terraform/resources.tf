@@ -41,6 +41,16 @@ resource "aws_subnet" "private_subnet_1" {
     }
 }
 
+resource "aws_subnet" "private_subnet_2" {
+    vpc_id = aws_vpc.main_vpc.id
+    cidr_block = "10.0.12.0/24"
+    availability_zone = "us-west-1c"
+
+    tags = {
+        Name = "vfc-private-subnet-2"
+    }
+}
+
 # Internet gateway
 resource "aws_internet_gateway" "main_igw" {
     vpc_id = aws_vpc.main_vpc.id
@@ -247,7 +257,7 @@ resource "aws_lb_listener" "http" {
 
 resource "aws_db_subnet_group" "rds_subnets" {
     name = "rds-subnet-group"
-    subnet_ids = [aws_subnet.private_subnet_1.id]
+    subnet_ids = [aws_subnet.private_subnet_1.id, aws_subnet.private_subnet_2]
 
     tags = {
         Name = "rds-subnet-group"
