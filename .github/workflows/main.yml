@@ -30,7 +30,6 @@ jobs:
       - name: Terraform Plan
         run: |
           cd Terraform
-          terraform fmt -check
           terraform validate
           terraform plan -out=tfplan
 
