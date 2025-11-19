@@ -1,1 +1,5 @@
 ---
+- name: Configure webserver
+  hosts: role_web
+  roles:
+    - webserver

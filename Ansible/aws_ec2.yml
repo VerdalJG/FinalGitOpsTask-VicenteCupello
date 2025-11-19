@@ -1,0 +1,16 @@
+plugin: aws_ec2
+
+filters:
+  instance-state-name: running
+  tag:Name: "vfc-*"
+
+hostnames: 
+  - tag:Name
+  - public-ip-address
+
+keyed_groups:
+  - key: tags.role
+    prefix: role
+
+compose:
+  ansible_host: public_ip_address 

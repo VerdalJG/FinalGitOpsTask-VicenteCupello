@@ -196,6 +196,14 @@ resource "aws_launch_template" "asg_lt" {
         associate_public_ip_address = true
         security_groups = [aws_security_group.ec2_sg.id] 
     }
+
+    tag_specifications {
+        resource_type = "instance"
+        tags = {
+            Name = "vfc-web"
+            Role = "web"
+        }
+    }
   
 }
 
