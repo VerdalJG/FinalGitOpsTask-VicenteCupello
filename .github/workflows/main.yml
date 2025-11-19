@@ -46,7 +46,8 @@ jobs:
         id: tf_output
         run: |
           cd Terraform
-          echo "ASG_IPS=$(terraform output -json asg_instance_ips | jq -r '.[]')" >> $GITHUB_ENV
+          ASG_IPS=$(terraform output -json asg_instance_ips | jq -r '.[]' | paste -sd " " -)
+          echo "ASG_IPS=$ASG_IPS" >> $GITHUB_ENV
 
       - name: Generate dynamic Ansible inventory
         run: |
@@ -64,6 +65,7 @@ jobs:
 
       - name: Setup SSH key
         run: |
+          mkdir -p ~/.ssh
           echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
 
