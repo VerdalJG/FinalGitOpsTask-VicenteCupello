@@ -202,6 +202,7 @@ resource "aws_launch_template" "asg_lt" {
         tags = {
             Name = "vfc-web"
             Role = "web"
+            propagate_at_launch = true
         }
     }
   
@@ -224,6 +225,18 @@ resource "aws_autoscaling_group" "asg" {
     health_check_type = "EC2"
     force_delete = true
     wait_for_capacity_timeout = "0"
+
+    tag {
+        key = "Name"
+        value = "vfc-web"
+        propagate_at_launch = true
+    }
+
+    tag {
+        key = "Role"
+        value = "web"
+        propagate_at_launch = true
+    }
 }
 
 # Load balancer resources
