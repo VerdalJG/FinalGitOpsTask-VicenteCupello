@@ -11,7 +11,7 @@ resource "aws_vpc" "main_vpc" {
 resource "aws_subnet" "public_subnet_1" {
     vpc_id = aws_vpc.main_vpc.id
     cidr_block = "10.0.1.0/24"
-    availability_zone = "us-west-1a"
+    availability_zone = "eu-west-2a"
     map_public_ip_on_launch = true
 
     tags = {
@@ -22,7 +22,7 @@ resource "aws_subnet" "public_subnet_1" {
 resource "aws_subnet" "public_subnet_2" {
     vpc_id = aws_vpc.main_vpc.id
     cidr_block = "10.0.2.0/24"
-    availability_zone = "us-west-1c"
+    availability_zone = "eu-west-2c"
     map_public_ip_on_launch = true
 
     tags = {
@@ -34,7 +34,7 @@ resource "aws_subnet" "public_subnet_2" {
 resource "aws_subnet" "private_subnet_1" {
     vpc_id = aws_vpc.main_vpc.id
     cidr_block = "10.0.11.0/24"
-    availability_zone = "us-west-1a"
+    availability_zone = "eu-west-2a"
 
     tags = {
         Name = "vfc-private-subnet-1"
@@ -44,7 +44,7 @@ resource "aws_subnet" "private_subnet_1" {
 resource "aws_subnet" "private_subnet_2" {
     vpc_id = aws_vpc.main_vpc.id
     cidr_block = "10.0.12.0/24"
-    availability_zone = "us-west-1c"
+    availability_zone = "eu-west-2c"
 
     tags = {
         Name = "vfc-private-subnet-2"
@@ -272,7 +272,7 @@ resource "aws_db_instance" "postgresql" {
     storage_type = "gp2"
 
     username = "vfc"
-    password = "vfcVRDL!1"
+    password = "vfcVRDL1"
     db_name = "vfcRdsPostgres"
 
     db_subnet_group_name = aws_db_subnet_group.rds_subnets.name
