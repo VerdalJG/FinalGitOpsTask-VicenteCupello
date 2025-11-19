@@ -267,16 +267,17 @@ resource "aws_db_subnet_group" "rds_subnets" {
 resource "aws_db_instance" "postgresql" {
     allocated_storage    = 20
     engine               = "postgres"
-    engine_version       = "16.11"
+    engine_version       = "15.3"
     instance_class       = "db.t3.micro"
     username             = "vfc"
     password             = "vfcVRDL!1"
     db_subnet_group_name = aws_db_subnet_group.rds_subnets.name
     publicly_accessible  = false
     skip_final_snapshot  = true
+    multi_az = false
 
     vpc_security_group_ids = [aws_security_group.rds_sg.id]
     tags = {
-        Name = "rds-postgres"
+        Name = "vfc-rds-postgres"
     }
 }
