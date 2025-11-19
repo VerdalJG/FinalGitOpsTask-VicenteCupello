@@ -60,33 +60,6 @@ jobs:
           python3 -m pip install --upgrade pip
           pip install ansible boto3 botocore
 
-      - name: Debug EC2 instances (describe-instances)
-        run: |
-          aws ec2 describe-instances \
-            --region $AWS_DEFAULT_REGION \
-            --query "Reservations[].Instances[].{ID:InstanceId,State:State.Name,Name:Tags[?Key=='Name']|[0].Value,Role:Tags[?Key=='Role']|[0].Value,PrivateIP:PrivateIpAddress,PublicIP:PublicIpAddress,Subnet:SubnetId}"
-        env:
-          AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-      - name: Debug EC2 tags
-        run: |
-          aws ec2 describe-tags --region $AWS_DEFAULT_REGION --query "Tags[?Key=='Name' || Key=='Role']"
-        env:
-          AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-      - name: Debug Ansible inventory (verbose)
-        run: |
-          cd Ansible
-          ANSIBLE_DEPRECATION_WARNINGS=False ANSIBLE_DEBUG=True ansible-inventory -i aws_ec2.yml --list -vvv
-        env:
-          AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
       - name: Run Ansible Playbook
         run: |
           cd Ansible
