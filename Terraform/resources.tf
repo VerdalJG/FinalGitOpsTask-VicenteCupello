@@ -270,7 +270,7 @@ resource "aws_db_instance" "postgresql" {
     engine_version       = "16.11"
     instance_class       = "db.t3.micro"
     username             = "vfc"
-    password             = "VRDL!1"
+    password             = "vfcVRDL!1"
     db_subnet_group_name = aws_db_subnet_group.rds_subnets.name
     publicly_accessible  = false
     skip_final_snapshot  = true
