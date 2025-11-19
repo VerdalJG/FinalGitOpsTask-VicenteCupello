@@ -273,7 +273,7 @@ resource "aws_db_instance" "postgresql" {
 
     username = "vfc"
     password = "vfcVRDL!1"
-    db_name = "vfc-rds-postgres"
+    db_name = "vfcRdsPostgres"
 
     db_subnet_group_name = aws_db_subnet_group.rds_subnets.name
     vpc_security_group_ids = [aws_security_group.rds_sg.id]
