@@ -167,20 +167,20 @@ resource "aws_security_group" "ec2_sg" {
 }
 
 resource "aws_security_group" "rds_sg" {
-    name   = "vfc-rds-sg"
+    name = "vfc-rds-sg"
     vpc_id = aws_vpc.main_vpc.id
 
     ingress {
-        from_port       = 5432
-        to_port         = 5432
-        protocol        = "tcp"
+        from_port = 5432
+        to_port = 5432
+        protocol = "tcp"
         security_groups = [aws_security_group.ec2_sg.id]
     }
 
     egress {
-        from_port   = 0
-        to_port     = 0
-        protocol    = "-1"
+        from_port = 0
+        to_port = 0
+        protocol = "-1"
         cidr_blocks = ["0.0.0.0/0"]
     }
 }
@@ -201,28 +201,28 @@ resource "aws_launch_template" "asg_lt" {
 
 # Auto-Scaling Group
 resource "aws_autoscaling_group" "asg" {
-    desired_capacity     = 2
-    max_size             = 4
-    min_size             = 2
+    desired_capacity = 2
+    max_size = 4
+    min_size = 2
     vpc_zone_identifier  = [aws_subnet.public_subnet_1.id, aws_subnet.public_subnet_2.id]
 
     launch_template {
-        id      = aws_launch_template.asg_lt.id
+        id = aws_launch_template.asg_lt.id
         version = "$Latest"
     }
 
     target_group_arns = [aws_lb_target_group.asg_targets.arn]
 
-    health_check_type         = "EC2"
-    force_delete              = true
+    health_check_type = "EC2"
+    force_delete = true
     wait_for_capacity_timeout = "0"
 }
 
 # Load balancer resources
 resource "aws_lb" "alb" {
-    name               = "vfc-alb"
-    security_groups    = [aws_security_group.alb_sg.id]
-    subnets            = [aws_subnet.public_subnet_1.id, aws_subnet.public_subnet_2.id]
+    name = "vfc-alb"
+    security_groups = [aws_security_group.alb_sg.id]
+    subnets = [aws_subnet.public_subnet_1.id, aws_subnet.public_subnet_2.id]
 
     tags = {
         Name = "vfc-alb"
@@ -230,27 +230,27 @@ resource "aws_lb" "alb" {
 }
 
 resource "aws_lb_target_group" "asg_targets" {
-    name     = "vfc-asg-tg"
-    port     = 80
+    name = "vfc-asg-tg"
+    port = 80
     protocol = "HTTP"
-    vpc_id   = aws_vpc.main_vpc.id
+    vpc_id = aws_vpc.main_vpc.id
 
     health_check {
-        path                = "/"
-        interval            = 20
-        healthy_threshold   = 3
+        path = "/"
+        interval = 20
+        healthy_threshold = 3
         unhealthy_threshold = 3
-        matcher             = "200"
+        matcher = "200"
     }
 }
 
 resource "aws_lb_listener" "http" {
     load_balancer_arn = aws_lb.alb.arn
-    port              = "80"
-    protocol          = "HTTP"
+    port = "80"
+    protocol = "HTTP"
 
     default_action {
-        type             = "forward"
+        type = "forward"
         target_group_arn = aws_lb_target_group.asg_targets.arn
     }
 }
@@ -265,18 +265,19 @@ resource "aws_db_subnet_group" "rds_subnets" {
 }
 
 resource "aws_db_instance" "postgresql" {
-    allocated_storage    = 20
-    engine               = "postgres"
-    engine_version       = "15.3"
-    instance_class       = "db.t3.micro"
-    username             = "vfc"
-    password             = "vfcVRDL!1"
-    db_subnet_group_name = aws_db_subnet_group.rds_subnets.name
-    publicly_accessible  = false
-    skip_final_snapshot  = true
-    multi_az = false
+    allocated_storage = 10
+    engine = "postgres"
+    engine_version = "16.11"
+    instance_class = "db.t3.micro"
+    storage_type = "gp2"
 
+    username = "vfc"
+    password = "vfcVRDL!1"
+    db_name = "vfc-rds-postgres"
+
+    db_subnet_group_name = aws_db_subnet_group.rds_subnets.name
     vpc_security_group_ids = [aws_security_group.rds_sg.id]
+
     tags = {
         Name = "vfc-rds-postgres"
     }
