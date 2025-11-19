@@ -46,7 +46,8 @@ jobs:
         id: tf_output
         run: |
           cd Terraform
-          echo "ASG_IPS=$(terraform output -json asg_instance_ips | jq -r '.[]')" >> $GITHUB_ENV
+          ASG_IPS=$(terraform output -json asg_instance_ips | jq -r '.[]' | paste -sd " " -)
+          echo "ASG_IPS=$ASG_IPS" >> $GITHUB_ENV
 
       - name: Generate dynamic Ansible inventory
         run: |
