@@ -56,7 +56,9 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
 
       - name: Run Ansible Playbook
-        run: ansible-playbook playbook.yml --user ubuntu
+        run: |
+          cd Ansible
+          ansible-playbook playbook.yml --user ubuntu
         env:
           AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
   
