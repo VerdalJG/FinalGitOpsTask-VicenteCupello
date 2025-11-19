@@ -4,12 +4,12 @@ filters:
   instance-state-name: running
   tag:Name: "vfc-*"
 
-hostnames: 
+hostnames:
   - tag:Name
   - public-ip-address
 
 keyed_groups:
-  - key: tags.role
+  - key: tags.Role
     prefix: role
 
 compose:
