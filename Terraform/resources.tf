@@ -256,7 +256,7 @@ resource "aws_lb_listener" "http" {
 }
 
 resource "aws_db_subnet_group" "rds_subnets" {
-    name = "rds-subnet-group"
+    name = "vfc-rds-subnet-group"
     subnet_ids = [aws_subnet.private_subnet_1.id, aws_subnet.private_subnet_2.id]
 
     tags = {
