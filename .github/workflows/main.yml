@@ -9,7 +9,6 @@ jobs:
 
     outputs:
       alb_dns: ${{ steps.tf_output.outputs.alb_dns }}
-      asg_ips: ${{ steps.tf_output.outputs.asg_ips }}
 
     steps:
       - name: Checkout
@@ -50,19 +49,12 @@ jobs:
         id: tf_output
         run: |
           cd Terraform
-          
-          # Create JSON output for ASG instances
-          asg_json=$(terraform output -json asg_instance_ips)
-          echo "asg_ips<<EOF" >> $GITHUB_OUTPUT
-          echo "$asg_json" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
-          
           alb_dns=$(terraform output -raw alb_dns_name)
           echo "alb_dns=$alb_dns" >> $GITHUB_OUTPUT
 
   ansible:
     needs: terraform
-    runs-on: ubuntu latest
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v5.0.1
@@ -83,8 +75,6 @@ jobs:
           AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
         run: |
           cd Ansible
-          ASG_IPS=$(echo '${{ needs.terraform.outputs.asg_ips }}' | jq -r '.[]' | paste -sd " " -)
-          echo "ASG_IPS=$ASG_IPS" >> $GITHUB_ENV
           echo "ALB_DNS=${{ needs.terraform.outputs.alb_dns }}" >> $GITHUB_ENV
 
       - name: Run Ansible Playbook
