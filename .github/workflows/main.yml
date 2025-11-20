@@ -52,7 +52,7 @@ jobs:
           terraform output
           echo "$(terraform output -raw alb_dns_name)"
           alb_dns=$(terraform output -raw alb_dns_name)
-          echo "alb_dns=$alb_dns" >> $GITHUB_OUTPUT
+          echo "alb_dns=$alb_dns" >> "$GITHUB_OUTPUT"
 
   ansible:
     needs: terraform
@@ -80,12 +80,14 @@ jobs:
 
       - name: Debug ALB DNS
         run: |
-          echo "${{ needs.terraform.outputs.alb_dns }}"
+          echo ${{ needs.terraform.outputs.alb_dns }}
 
       - name: Run Ansible Playbook
+        env:
+          ALB_DNS: ${{ needs.terraform.outputs.alb_dns }}
         run: |
           cd Ansible
-          ansible-playbook playbook.yml --user ubuntu -e "alb_dns=${{ needs.terraform.outputs.alb_dns }}"
+          ansible-playbook playbook.yml --user ubuntu -e "alb_dns=$ALB_DNS"
         env:
           AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
   
