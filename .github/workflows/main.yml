@@ -49,6 +49,8 @@ jobs:
         id: tf_output
         run: |
           cd Terraform
+          terraform output
+          echo "$(terraform output -raw alb_dns_name)"
           alb_dns=$(terraform output -raw alb_dns_name)
           echo "alb_dns=$alb_dns" >> $GITHUB_OUTPUT
 
