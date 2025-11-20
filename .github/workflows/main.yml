@@ -83,11 +83,10 @@ jobs:
           echo ${{ needs.terraform.outputs.alb_dns }}
 
       - name: Run Ansible Playbook
-        env:
-          ALB_DNS: ${{ needs.terraform.outputs.alb_dns }}
         run: |
           cd Ansible
           ansible-playbook playbook.yml --user ubuntu -e "alb_dns=$ALB_DNS"
         env:
+          ALB_DNS: ${{ needs.terraform.outputs.alb_dns }}
           AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
   
