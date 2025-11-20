@@ -3,3 +3,23 @@
   hosts: role_web
   roles:
     - webserver
+
+- name: Verify Apache is up
+  hosts: localhost # checking load balancer, so can check from runner
+  gather_facts: false
+  tasks:
+    - name: Check that the Apache site returns HTTP 200
+      uri:
+        url: http://{{ alb_dns }}
+        method: GET
+        return_content: no
+        status_code: 200
+      register: result
+      retries: 3         # retry in case the service is still starting
+      delay: 10          # wait 10 seconds between retries
+      until: result.status == 200
+
+    - name: Print validation result
+      debug:
+        msg: "Apache is up and returned HTTP 200" 
+  
