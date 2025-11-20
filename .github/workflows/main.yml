@@ -4,11 +4,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  terraform:
+  deploy:
     runs-on: ubuntu-latest
-
-    outputs:
-      alb_dns: ${{ steps.tf_output.outputs.alb_dns }}
 
     steps:
       - name: Checkout
@@ -31,39 +28,22 @@ jobs:
           terraform init
 
       - name: Terraform Plan
-        env:
-          AWS_REGION: ${{ secrets.AWS_REGION }}
         run: |
           cd Terraform
           terraform validate
           terraform plan -var="aws_region=${{ secrets.AWS_REGION }}" -out=tfplan
 
       - name: Terraform Apply
-        env:
-          AWS_REGION: ${{ secrets.AWS_REGION }}
         run: |
           cd Terraform
           terraform apply -var="aws_region=${{ secrets.AWS_REGION }}" -auto-approve tfplan
 
-      - name: Terraform Output
-        id: tf_output
+      - name: Capture ALB DNS
         run: |
           cd Terraform
-          echo "alb_dns=$(terraform output -raw alb_dns_name)" >> "$GITHUB_OUTPUT"
+          alb_dns=$(terraform output -raw alb_dns_name)
+          echo "ALB_DNS=$alb_dns" >> $GITHUB_ENV
 
-  ansible:
-    needs: terraform
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5.0.1
-
-      - name: Set up AWS credentials
-        run: |
-          echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> $GITHUB_ENV
-          echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> $GITHUB_ENV
-          echo "AWS_REGION=${{ secrets.AWS_REGION }}" >> $GITHUB_ENV
-    
       - name: Setup SSH key for Ansible
         run: |
           mkdir -p ~/.ssh
@@ -78,9 +58,7 @@ jobs:
       - name: Run Ansible Playbook
         run: |
           cd Ansible
-          echo "$ALB_DNS"
           ansible-playbook playbook.yml --user ubuntu -e "alb_dns=$ALB_DNS"
         env:
-          ALB_DNS: ${{ needs.terraform.outputs.alb_dns }}
           AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
-  
+          ALB_DNS: ${{ env.ALB_DNS }}
