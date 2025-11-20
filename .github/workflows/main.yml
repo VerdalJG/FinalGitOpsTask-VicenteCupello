@@ -78,7 +78,7 @@ jobs:
 
       - name: Debug ALB DNS
         run: |
-          echo "{{ needs.terraform.outputs.alb_dns }}"
+          echo "${{ needs.terraform.outputs.alb_dns }}"
 
       - name: Run Ansible Playbook
         run: |
