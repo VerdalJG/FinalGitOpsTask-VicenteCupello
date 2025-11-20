@@ -78,13 +78,10 @@ jobs:
           python3 -m pip install --upgrade pip
           pip install ansible boto3 botocore jq
 
-      - name: Debug ALB DNS
-        run: |
-          echo ${{ needs.terraform.outputs.alb_dns }}
-
       - name: Run Ansible Playbook
         run: |
           cd Ansible
+          echo "$ALB_DNS"
           ansible-playbook playbook.yml --user ubuntu -e "alb_dns=$ALB_DNS"
         env:
           ALB_DNS: ${{ needs.terraform.outputs.alb_dns }}
