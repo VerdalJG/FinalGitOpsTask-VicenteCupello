@@ -223,7 +223,7 @@ resource "aws_autoscaling_group" "asg" {
     target_group_arns = [aws_lb_target_group.asg_targets.arn]
 
     health_check_type = "EC2"
-    health_check_grace_period = 180
+    health_check_grace_period = 480
     force_delete = true
     wait_for_capacity_timeout = "0"
 
