@@ -259,9 +259,9 @@ resource "aws_lb_target_group" "asg_targets" {
 
     health_check {
         path = "/"
-        interval = 30
+        interval = 60
         healthy_threshold = 3
-        unhealthy_threshold = 5
+        unhealthy_threshold = 10
         matcher = "200"
     }
 }
