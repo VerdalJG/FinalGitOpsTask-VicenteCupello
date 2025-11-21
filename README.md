@@ -60,9 +60,9 @@ The entire deployment is automated end-to-end following a GitOps workflow.
                      │public_subnet_1  │         │private_subnet_1  │
                      └───────┬─────────┘         └─────────┬────────┘
                              │                             │
-                     AZ c -> │                             │ <- AZ c
+                             │                             │ 
                      ┌───────▼────────┐          ┌─────────▼──────────┐
-                     │  10.0.2.0/24   │          │   10.0.12.0/24     │
+          AZ c ----> │  10.0.2.0/24   │          │   10.0.12.0/24     │
                      │public_subnet_2 │          │  private_subnet_2  │
                      └───────┬────────┘          └─────────┬──────────┘
                              │                             │
