@@ -45,7 +45,7 @@ The entire deployment is automated end-to-end following a GitOps workflow.
 
 ---
 
-# Network Diagram (ASCII)
+# Network Diagram
 
 ```
                        ┌──────────────────────────────────────────┐
